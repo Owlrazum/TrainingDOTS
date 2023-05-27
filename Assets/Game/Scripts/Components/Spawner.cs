@@ -8,4 +8,6 @@ public struct Spawner : IComponentData
     public float NextSpawnTime;
     public float SpawnRate;
 	public float Speed;
+	public float Radius;
+	public int2 SpawnRange;
 }

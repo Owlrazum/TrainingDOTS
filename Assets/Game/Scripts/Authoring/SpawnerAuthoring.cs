@@ -8,6 +8,8 @@ class SpawnerAuthoring : MonoBehaviour
     public GameObject Prefab;
     public float SpawnRate;
 	public float Speed;
+	public float Radius = 1;
+	public int2 SpawnRange = new int2(0, 10);
 }
 
 class SpawnerBaker : Baker<SpawnerAuthoring>
@@ -23,13 +25,9 @@ class SpawnerBaker : Baker<SpawnerAuthoring>
             SpawnPosition = authoring.transform.position,
             NextSpawnTime = 0.0f,
             SpawnRate = authoring.SpawnRate,
-	        Speed = authoring.Speed
+	        Speed = authoring.Speed,
+	        Radius = authoring.Radius,
+	        SpawnRange = authoring.SpawnRange
         });
-
-	    Random rnd = new Random(1234);
-	    AddComponent(entity, new Ball
-	    {
-		    Velocity = rnd.NextFloat3Direction() 
-	    });
     }
 }	
