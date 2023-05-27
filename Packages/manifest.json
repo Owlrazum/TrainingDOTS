@@ -1,8 +1,11 @@
 {
   "dependencies": {
     "com.mischief.markdownviewer": "https://github.com/gwaredd/UnityMarkdownViewer.git",
+    "com.unity.entities": "1.0.8",
+    "com.unity.entities.graphics": "1.0.8",
     "com.unity.ide.rider": "3.0.21",
     "com.unity.ide.vscode": "1.2.5",
+    "com.unity.jobs": "0.70.0-preview.7",
     "com.unity.render-pipelines.universal": "14.0.7",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.6",
