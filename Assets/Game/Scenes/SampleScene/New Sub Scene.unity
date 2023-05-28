@@ -152,13 +152,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07afcff0a4014378845e3f2ba71cdfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6520942780590105338, guid: 35a06dc09ce584db1844193e01d980fa, type: 3}
-  SpawnRate: 0.01
-  Speed: 100
+  Prefab: {fileID: 6520942780590105338, guid: f65403f39549749f686ece84d4931187, type: 3}
+  SpawnRate: 0.5
+  Speed: 25
   Radius: 6
   SpawnRange:
     x: 0
-    y: 2
+    y: 10
 --- !u!4 &45741921
 Transform:
   m_ObjectHideFlags: 0
@@ -190,7 +190,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &773705126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,12 +204,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 6520942780590105338, guid: 35a06dc09ce584db1844193e01d980fa, type: 3}
-  SpawnRate: 0.01
-  Speed: 100
+  SpawnRate: 10
+  Speed: 25
   Radius: 6
   SpawnRange:
     x: 0
-    y: 2
+    y: 10
 --- !u!4 &773705127
 Transform:
   m_ObjectHideFlags: 0
@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca0c504c15441dfbd069dfd54c8f0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LerpSpeed: 0.35
+  LerpSpeed: 0.75
 --- !u!4 &1527228858
 Transform:
   m_ObjectHideFlags: 0
@@ -286,7 +286,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1820511391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,12 +300,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 6520942780590105338, guid: 35a06dc09ce584db1844193e01d980fa, type: 3}
-  SpawnRate: 0.01
-  Speed: 100
+  SpawnRate: 10
+  Speed: 25
   Radius: 6
   SpawnRange:
     x: 0
-    y: 2
+    y: 10
 --- !u!4 &1820511392
 Transform:
   m_ObjectHideFlags: 0

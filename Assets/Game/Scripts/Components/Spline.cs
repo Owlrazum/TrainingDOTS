@@ -6,8 +6,9 @@ using Unity.Collections;
 public struct Spline : IComponentData
 {
 	public float3x4 ControlPoints;
-	public float lerpParam;
+	public float LerpParam;
 	public bool IsPositiveDireciton;
+	public int LeafCount;
 }
 
 /// <summary>

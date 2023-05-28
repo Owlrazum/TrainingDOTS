@@ -21,9 +21,6 @@ public partial struct SpawnerSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
 	    EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.Temp);
-        // Queries for all Spawner components. Uses RefRW because this system wants
-        // to read from and write to the component. If the system only needed read-only
-        // access, it would use RefRO instead.
         foreach (RefRW<Spawner> spawner in SystemAPI.Query<RefRW<Spawner>>())
         {
 	        if (spawner.ValueRO.SpawnRange.x >= spawner.ValueRO.SpawnRange.y)
@@ -31,26 +28,27 @@ public partial struct SpawnerSystem : ISystem
 		        continue;
 	        }
 	        
-	        // If the next spawn time has passed.
 	        while (spawner.ValueRO.NextSpawnTime < SystemAPI.Time.ElapsedTime)
 	        {
-	            // Spawns a new entity and positions it at the spawner.
 	            Entity newEntity = ecb.Instantiate(spawner.ValueRO.Prefab);
-	            // LocalPosition.FromPosition returns a Transform initialized with the given position.
 	            ecb.SetComponent(newEntity, LocalTransform.FromPosition(spawner.ValueRO.SpawnPosition));
-				ecb.AddComponent(newEntity, new Ball() 
-					{ Velocity = mRandom.NextFloat3Direction() * spawner.ValueRO.Speed });
+		        float speed = spawner.ValueRO.Speed;
+				ecb.AddComponent(newEntity, new Ball() { Speed =  speed, Radius = spawner.ValueRO.Radius});
 
-		        float3 dirA = new float3( mRandom.NextFloat2Direction(), mRandom.NextFloat() * spawner.ValueRO.Speed);
-		        float3 dirB = new float3(mRandom.NextFloat2Direction(), mRandom.NextFloat() * spawner.ValueRO.Speed);
-		        float2 dirC = mRandom.NextFloat2Direction() * spawner.ValueRO.Radius;
+		        float3 dir = math.forward() * speed;
+		        quaternion rotLeft = quaternion.AxisAngle(math.up(), -math.PI / 2);
+		        quaternion rotRight = quaternion.AxisAngle(math.up(), math.PI / 2);
+		        float3x4 controlPoints = new(spawner.ValueRO.SpawnPosition
+			        , math.rotate(rotLeft, dir)
+			        , math.rotate(rotRight, dir)
+			        , math.forward() * spawner.ValueRO.Radius
+				);
+
 		        ecb.AddComponent(newEntity, new Spline()
 		        { 
-			        ControlPoints = new float3x4(spawner.ValueRO.SpawnPosition
-						, new float3(dirA.x, 0, dirA.y) * dirA.z 
-						, new float3(dirB.x, 0, dirB.y) * dirB.z
-						, new float3(dirC.x, 0, dirC.y) + spawner.ValueRO.SpawnPosition), 
-			        lerpParam = 0
+			        ControlPoints = controlPoints
+			        , LerpParam = 0
+			        , LeafCount = 0
 				});
 		        
 		        // Resets the next spawn time.

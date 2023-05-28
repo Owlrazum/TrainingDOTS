@@ -3,5 +3,6 @@ using Unity.Mathematics;
 
 public struct Ball : IComponentData
 {
-	public float3 Velocity;
+	public float Speed;
+	public float Radius;
 }
