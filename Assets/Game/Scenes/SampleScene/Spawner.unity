@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465788, g: 0.49641263, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,13 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07afcff0a4014378845e3f2ba71cdfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6520942780590105338, guid: f65403f39549749f686ece84d4931187, type: 3}
-  SpawnRate: 0.5
-  Speed: 25
-  Radius: 6
-  SpawnRange:
-    x: 0
-    y: 10
+  Nodes: []
 --- !u!4 &45741921
 Transform:
   m_ObjectHideFlags: 0
@@ -203,13 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07afcff0a4014378845e3f2ba71cdfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6520942780590105338, guid: 35a06dc09ce584db1844193e01d980fa, type: 3}
-  SpawnRate: 10
-  Speed: 25
-  Radius: 6
-  SpawnRange:
-    x: 0
-    y: 10
+  Nodes: []
 --- !u!4 &773705127
 Transform:
   m_ObjectHideFlags: 0
@@ -299,13 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07afcff0a4014378845e3f2ba71cdfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6520942780590105338, guid: 35a06dc09ce584db1844193e01d980fa, type: 3}
-  SpawnRate: 10
-  Speed: 25
-  Radius: 6
-  SpawnRange:
-    x: 0
-    y: 10
+  Nodes: []
 --- !u!4 &1820511392
 Transform:
   m_ObjectHideFlags: 0

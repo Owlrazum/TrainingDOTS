@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
@@ -5,13 +6,14 @@ using Unity.Mathematics;
 
 namespace Authoring
 {
-	struct Edge
+	[Serializable]
+	public struct Edge
 	{
 		public int2 StartEnd;
 		public float3x4 Spline;
 	}
 	
-	class GraphAuthoring : MonoBehaviour
+	public class GraphAuthoring : MonoBehaviour
 	{
 		public List<GameObject> Nodes;
 		public List<Edge> Edges;
