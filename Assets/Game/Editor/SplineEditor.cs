@@ -18,6 +18,29 @@ namespace Authoring.Editor
 		GraphAuthoring mGraph;
 		HashSet<int2> mConstructedEdges;
 
+		class Vector2IntRegistratinToken : IDisposable
+		{
+			public Vector2IntField Field;
+			public EventCallback<ChangeEvent<Vector2Int>> ChangeEvent;
+			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
+		}
+		
+		List<IDisposable> mRegisteredTokens = new List<IDisposable>();
+		
+		void RegisterCallback(Vector2IntField field, EventCallback<ChangeEvent<Vector2Int>> changeEvent)
+		{
+			field.RegisterValueChangedCallback(changeEvent);
+			mRegisteredTokens.Add(new Vector2IntRegistratinToken { Field = field, ChangeEvent = changeEvent });
+		}
+		
+		public override void DiscardChanges()
+		{
+			base.DiscardChanges();
+			mRegisteredTokens.ForEach(token => token.Dispose());
+			mRegisteredTokens.Clear();
+		}
+
+
 		public override VisualElement CreateInspectorGUI()
 		{
 			mGraph = target as GraphAuthoring;
@@ -85,6 +108,15 @@ namespace Authoring.Editor
 			var startEndUI = v.Q<Vector2IntField>();
 			int2 value = mGraph.Edges[index].StartEnd;
 			startEndUI.value = new Vector2Int(value.x, value.y);
+
+			EventCallback<ChangeEvent<Vector2Int>> lambda = (evt) => {
+				Edge edge = mGraph.Edges[index];
+				edge.StartEnd.x = evt.newValue.x;
+				edge.StartEnd.y = evt.newValue.y;
+				mGraph.Edges[index] = edge;
+			};
+
+			RegisterCallback(startEndUI, lambda);
 		}
 
 		void OnSceneGUI()
