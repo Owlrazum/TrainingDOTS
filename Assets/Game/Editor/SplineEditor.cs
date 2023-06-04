@@ -15,35 +15,20 @@ namespace Authoring.Editor
 	public class SplineEditor : UnityEditor.Editor
 	{
 		public StyleSheet Style;
+
+		SerializedProperty mNodesProperty;
+		SerializedProperty mEdgesProperty;
 		GraphAuthoring mGraph;
 		HashSet<int2> mConstructedEdges;
 
-		class Vector2IntRegistratinToken : IDisposable
-		{
-			public Vector2IntField Field;
-			public EventCallback<ChangeEvent<Vector2Int>> ChangeEvent;
-			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
-		}
-		
 		List<IDisposable> mRegisteredTokens = new List<IDisposable>();
 		
-		void RegisterCallback(Vector2IntField field, EventCallback<ChangeEvent<Vector2Int>> changeEvent)
-		{
-			field.RegisterValueChangedCallback(changeEvent);
-			mRegisteredTokens.Add(new Vector2IntRegistratinToken { Field = field, ChangeEvent = changeEvent });
-		}
-		
-		public override void DiscardChanges()
-		{
-			base.DiscardChanges();
-			mRegisteredTokens.ForEach(token => token.Dispose());
-			mRegisteredTokens.Clear();
-		}
-
-
 		public override VisualElement CreateInspectorGUI()
 		{
-			mGraph = target as GraphAuthoring;
+			mNodesProperty = serializedObject.FindProperty("Nodes");
+			mEdgesProperty = serializedObject.FindProperty("Edges");
+
+			// mGraph = target as GraphAuthoring;
 			Assert.IsTrue(mGraph != null);
 			
 			VisualElement container = new VisualElement();
@@ -67,7 +52,7 @@ namespace Authoring.Editor
 			
 			nodes.makeItem = makeNode;
 			nodes.bindItem = bindNode;
-			nodes.itemsSource = mGraph.Nodes;
+			nodes.itemsSource = mNodesProperty.array mGraph.Nodes;
 			nodes.selectionType = SelectionType.Single;
 			nodes.showAddRemoveFooter = true;
 
@@ -87,7 +72,7 @@ namespace Authoring.Editor
 		
 		VisualElement RenderNodeUI()
 		{
-			ObjectField field = new ObjectField("Node");
+			ObjectField field = new ObjectField{label = "Node", objectType = typeof(GameObject)};
 			return field;
 		}
 		
@@ -95,6 +80,12 @@ namespace Authoring.Editor
 		{
 			ObjectField field = v as ObjectField;
 			field.value = mGraph.Nodes[index];
+
+			EventCallback<ChangeEvent<UnityEngine.Object>> lambda = (evt) => {
+				mGraph.Nodes[index] = evt.newValue as GameObject;
+			};
+
+			RegisterCallback(field, lambda);
 		}
 
 		VisualElement RenderEdgeUI()
@@ -146,6 +137,39 @@ namespace Authoring.Editor
 				edge.Spline = spline;
 				mGraph.Edges[edgeIndex] = edge;
 			}
+		}
+
+		class Vector2IntRegistratinToken : IDisposable
+		{
+			public Vector2IntField Field;
+			public EventCallback<ChangeEvent<Vector2Int>> ChangeEvent;
+			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
+		}
+
+		class ObjectFieldRegistratinToken : IDisposable
+		{
+			public ObjectField Field;
+			public EventCallback<ChangeEvent<UnityEngine.Object>> ChangeEvent;
+			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
+		}
+
+		void RegisterCallback(Vector2IntField field, EventCallback<ChangeEvent<Vector2Int>> changeEvent)
+		{
+			field.RegisterValueChangedCallback(changeEvent);
+			mRegisteredTokens.Add(new Vector2IntRegistratinToken { Field = field, ChangeEvent = changeEvent });
+		}
+
+		void RegisterCallback(ObjectField field, EventCallback<ChangeEvent<UnityEngine.Object>> changeEvent)
+		{
+			field.RegisterValueChangedCallback(changeEvent);
+			mRegisteredTokens.Add(new ObjectFieldRegistratinToken { Field = field, ChangeEvent = changeEvent });
+		}
+		
+		public override void DiscardChanges()
+		{
+			base.DiscardChanges();
+			mRegisteredTokens.ForEach(token => token.Dispose());
+			mRegisteredTokens.Clear();
 		}
 	}
 }
