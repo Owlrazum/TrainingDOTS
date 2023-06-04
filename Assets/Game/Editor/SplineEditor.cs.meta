@@ -4,7 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - Style: {fileID: 7433441132597879392, guid: e9519063ce6654fac93901c99fd3693a, type: 3}
+  - mVisualTreeAsset: {fileID: 9197481963319205126, guid: 9d530f4b419d9496399e92732386cfe4, type: 3}
+  - mEdgeElementStyleSheet: {fileID: 7433441132597879392, guid: 8ce18ddc05df844aab25704b93d1d88e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

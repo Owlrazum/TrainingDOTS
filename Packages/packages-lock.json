@@ -28,8 +28,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.entities": {
-      "version": "1.0.8",
-      "depth": 0,
+      "version": "1.0.10",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.8.4",
@@ -46,11 +46,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.entities.graphics": {
-      "version": "1.0.8",
+      "version": "1.0.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.entities": "1.0.8",
+        "com.unity.entities": "1.0.10",
         "com.unity.modules.particlesystem": "1.0.0",
         "com.unity.render-pipelines.core": "14.0.6"
       },
@@ -63,29 +63,11 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.ide.rider": {
-      "version": "3.0.21",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.ide.vscode": {
       "version": "1.2.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.jobs": {
-      "version": "0.70.0-preview.7",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.collections": "1.4.0"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.mathematics": {
@@ -141,7 +123,7 @@
       }
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.21.3",
+      "version": "1.21.5",
       "depth": 1,
       "source": "registry",
       "dependencies": {},

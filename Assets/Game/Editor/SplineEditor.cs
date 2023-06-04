@@ -1,175 +1,118 @@
-using System;
-using System.Collections.Generic;
+using System.Text;
 
 using Unity.Mathematics;
 
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.Assertions;
-using UnityEngine.UIElements;
 
 namespace Authoring.Editor
 {
-	[CustomEditor(typeof(GraphAuthoring))]
-	public class SplineEditor : UnityEditor.Editor
-	{
-		public StyleSheet Style;
+	/// <summary>
+    /// Limitation, only one instance at a time it seems;
+    /// </summary>
+    [CustomEditor(typeof(GraphAuthoring))]
+    public class SplineEditor : UnityEditor.Editor
+    {
+        static string mEdgesToShowPrompt = "";
 
-		SerializedProperty mNodesProperty;
-		SerializedProperty mEdgesProperty;
-		GraphAuthoring mGraph;
-		HashSet<int2> mConstructedEdges;
+        GraphAuthoring mGraph;
+        SerializedProperty mConnectionsProperty;
+		SerializedProperty mSplineControlsProperty;
 
-		List<IDisposable> mRegisteredTokens = new List<IDisposable>();
-		
-		public override VisualElement CreateInspectorGUI()
-		{
-			mNodesProperty = serializedObject.FindProperty("Nodes");
-			mEdgesProperty = serializedObject.FindProperty("Edges");
+        Tool LastTool = Tool.None;
 
-			// mGraph = target as GraphAuthoring;
-			Assert.IsTrue(mGraph != null);
-			
-			VisualElement container = new VisualElement();
-			container.styleSheets.Add(Style);
-			container.AddToClassList("spline-editor");
+        void OnEnable()
+        {
+            LastTool = Tools.current;
+            Tools.current = Tool.None;
+        }
 
-			ListView nodes = new ListView();
-			ListView edges = new ListView();
-			
-			nodes.AddToClassList("spline-editor__nodes");
-			edges.AddToClassList("spline-editor__edges");
-			
-			container.Add(nodes);
-			container.Add(edges);
+        void OnDisable()
+        {
+            Tools.current = LastTool;
+        }
 
-			Func<VisualElement> makeNode = RenderNodeUI;
-			Action<VisualElement, int> bindNode = BindNodeUI;
-			
-			Func<VisualElement> makeEdge = RenderEdgeUI;
-			Action<VisualElement, int> bindEdge = BindEdgeUI;
-			
-			nodes.makeItem = makeNode;
-			nodes.bindItem = bindNode;
-			nodes.itemsSource = mNodesProperty.array mGraph.Nodes;
-			nodes.selectionType = SelectionType.Single;
-			nodes.showAddRemoveFooter = true;
 
-			edges.makeItem = makeEdge;
-			edges.bindItem = bindEdge;
-			edges.itemsSource = mGraph.Edges;
-			edges.selectionType = SelectionType.Single;
-			edges.showAddRemoveFooter = true;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-			// Callback invoked when the user double clicks an item
-			edges.itemsChosen += Debug.Log;
+            mEdgesToShowPrompt = GUILayout.TextField(mEdgesToShowPrompt);
+        }
 
-			// Callback invoked when the user changes the selection inside the ListView
-			edges.selectionChanged += Debug.Log;
-			return container;
-		}
-		
-		VisualElement RenderNodeUI()
-		{
-			ObjectField field = new ObjectField{label = "Node", objectType = typeof(GameObject)};
-			return field;
-		}
-		
-		void BindNodeUI(VisualElement v, int index)
-		{
-			ObjectField field = v as ObjectField;
-			field.value = mGraph.Nodes[index];
+        void OnSceneGUI()
+        {
+            Tools.current = Tool.None;
 
-			EventCallback<ChangeEvent<UnityEngine.Object>> lambda = (evt) => {
-				mGraph.Nodes[index] = evt.newValue as GameObject;
-			};
+            mGraph = target as GraphAuthoring;
+            mConnectionsProperty = serializedObject.FindProperty("Connections");
+            mSplineControlsProperty = serializedObject.FindProperty("SplineControls");
 
-			RegisterCallback(field, lambda);
-		}
+            StringBuilder builder = new();
+            for (int i = 0; i < mEdgesToShowPrompt.Length; i++)
+            {
+                if (mEdgesToShowPrompt[i] == ';')
+                {
+                    if (!int.TryParse(builder.ToString(), out int edgeIndex))
+                    {
+                        Debug.LogError("Failed to Parse into integer");
+                    }
+                    builder.Clear();
 
-		VisualElement RenderEdgeUI()
-		{
-			Vector2IntField startEndUI = new();
-			return startEndUI;
-		}
+                    var edgeProp = mConnectionsProperty.GetArrayElementAtIndex(edgeIndex);
+                    var edgeX = edgeProp.FindPropertyRelative("x");
+                    var edgeY = edgeProp.FindPropertyRelative("y");
+                    ShowEdgeControls(edgeX.intValue, edgeY.intValue);
+                }
+                builder.Append(mEdgesToShowPrompt[i]);
+            }
+        }
 
-		void BindEdgeUI(VisualElement v, int index)
-		{
-			var startEndUI = v.Q<Vector2IntField>();
-			int2 value = mGraph.Edges[index].StartEnd;
-			startEndUI.value = new Vector2Int(value.x, value.y);
+        void ShowEdgeControls(int start, int end)
+        {
+            var cs = mSplineControlsProperty.GetArrayElementAtIndex(start);
+			var ce = mSplineControlsProperty.GetArrayElementAtIndex(end);
 
-			EventCallback<ChangeEvent<Vector2Int>> lambda = (evt) => {
-				Edge edge = mGraph.Edges[index];
-				edge.StartEnd.x = evt.newValue.x;
-				edge.StartEnd.y = evt.newValue.y;
-				mGraph.Edges[index] = edge;
-			};
+            var csx = cs.FindPropertyRelative("x");
+            var csy = cs.FindPropertyRelative("y");
+            var csz = cs.FindPropertyRelative("z");
 
-			RegisterCallback(startEndUI, lambda);
-		}
+            var cex = ce.FindPropertyRelative("x");
+            var cey = ce.FindPropertyRelative("y");
+            var cez = ce.FindPropertyRelative("z");
 
-		void OnSceneGUI()
-		{
-			// graph = (GraphAuthoring)target;
-			// for (int i = 0; i < graph.Edges.Count; i++)
-			// {
-			// 	CheckEdge(i);
-			// }
-		}
+            float3x4 spline = new float3x4(
+                mGraph.transform.GetChild(start).position,
+                new float3(csx.floatValue, csy.floatValue, csz.floatValue),
+                new float3(cex.floatValue, cey.floatValue, cez.floatValue),
+                mGraph.transform.GetChild(end).position
+			);
+            EditorGUI.BeginChangeCheck();
+            spline[0] = Handles.PositionHandle(spline[0], Quaternion.identity);
+            spline[1] = Handles.PositionHandle(spline[1], Quaternion.identity);
+            spline[2] = Handles.PositionHandle(spline[2], Quaternion.identity);
+            spline[3] = Handles.PositionHandle(spline[3], Quaternion.identity);
+            Handles.DrawBezier(
+                spline[0], spline[3],
+                spline[1], spline[2],
+                Color.red, null, 5);
+            if (EditorGUI.EndChangeCheck())
+            {
+                mGraph.transform.GetChild(start).position = spline[0];
 
-		void CheckEdge(int edgeIndex)
-		{
-			Edge edge = mGraph.Edges[edgeIndex];
-			float3x4 spline = edge.Spline;
-			EditorGUI.BeginChangeCheck();
-			spline[0] =Handles.PositionHandle(spline[0], Quaternion.identity);
-			spline[1] =Handles.PositionHandle(spline[1], Quaternion.identity);
-			spline[2] =Handles.PositionHandle(spline[2], Quaternion.identity);
-			spline[3] =Handles.PositionHandle(spline[3], Quaternion.identity);
-			Handles.DrawBezier(
-				spline[0], spline[3],
-				spline[1], spline[2],
-				Color.red, null, 5);
-			if (EditorGUI.EndChangeCheck())
-			{
-				edge.Spline = spline;
-				mGraph.Edges[edgeIndex] = edge;
-			}
-		}
+                csx.floatValue = spline[1][0];
+				csy.floatValue = spline[1][1];
+				csz.floatValue = spline[1][2];
 
-		class Vector2IntRegistratinToken : IDisposable
-		{
-			public Vector2IntField Field;
-			public EventCallback<ChangeEvent<Vector2Int>> ChangeEvent;
-			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
-		}
+                cex.floatValue = spline[2][0];
+                cey.floatValue = spline[2][1];
+                cez.floatValue = spline[2][2];
 
-		class ObjectFieldRegistratinToken : IDisposable
-		{
-			public ObjectField Field;
-			public EventCallback<ChangeEvent<UnityEngine.Object>> ChangeEvent;
-			public void Dispose() => Field.UnregisterValueChangedCallback(ChangeEvent);
-		}
+                mGraph.transform.GetChild(end).position = spline[3];
 
-		void RegisterCallback(Vector2IntField field, EventCallback<ChangeEvent<Vector2Int>> changeEvent)
-		{
-			field.RegisterValueChangedCallback(changeEvent);
-			mRegisteredTokens.Add(new Vector2IntRegistratinToken { Field = field, ChangeEvent = changeEvent });
-		}
-
-		void RegisterCallback(ObjectField field, EventCallback<ChangeEvent<UnityEngine.Object>> changeEvent)
-		{
-			field.RegisterValueChangedCallback(changeEvent);
-			mRegisteredTokens.Add(new ObjectFieldRegistratinToken { Field = field, ChangeEvent = changeEvent });
-		}
-		
-		public override void DiscardChanges()
-		{
-			base.DiscardChanges();
-			mRegisteredTokens.ForEach(token => token.Dispose());
-			mRegisteredTokens.Clear();
-		}
-	}
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
+    }
 }

@@ -6,18 +6,11 @@ using Unity.Mathematics;
 
 namespace Authoring
 {
-	[Serializable]
-	public struct Edge
-	{
-		public int2 StartEnd;
-		public float3x4 Spline;
-	}
-	
 	public class GraphAuthoring : MonoBehaviour
 	{
-		public List<GameObject> Nodes;
-		public List<Edge> Edges;
-	}
+        public List<int2> Connections;
+        public List<float3> SplineControls;
+    }
 
 	class GraphBaker : Baker<GraphAuthoring>
 	{
