@@ -9,7 +9,8 @@ namespace Authoring
 	public class GraphAuthoring : MonoBehaviour
 	{
         public List<int2> Connections;
-        public List<float3> SplineControls;
+        public List<float3x2> SplineControls;
+        public bool IsHermite;
     }
 
 	class GraphBaker : Baker<GraphAuthoring>
