@@ -92,9 +92,9 @@ public struct SplineUtil
         }
     }
 
-    public static void HermiteToBeizer(in float4x3 hermite, out float4x3 beizer)
+    public static float4x3 HermiteToBeizer(in float4x3 hermite)
     {
-        beizer = math.mul(math.mul(InverseBeizer, HermiteBasis), hermite);
+        return math.mul(math.mul(InverseBeizer, HermiteBasis), hermite);
     }
 
     /// <summary>

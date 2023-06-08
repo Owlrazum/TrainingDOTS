@@ -3,6 +3,6 @@ using Unity.Mathematics;
 
 public struct Spline : IComponentData
 {
-	public float3x4 ControlPoints;
+    public float4x3 ControlPoints;
 }
 

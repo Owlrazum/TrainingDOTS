@@ -1,8 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-[InternalBufferCapacity(8)]
-public struct Node : IBufferElementData
+public struct Node : IComponentData
 {
-	public float3 Position;
+    public float3 Position;
 }

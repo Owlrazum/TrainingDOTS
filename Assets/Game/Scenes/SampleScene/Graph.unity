@@ -485,36 +485,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07afcff0a4014378845e3f2ba71cdfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Connections:
-  - x: 0
-    y: 1
-  - x: 1
-    y: 2
-  - x: 2
-    y: 0
-  SplineControls:
-  - c0:
-      x: -8.5
+  Edges:
+  - PathType: 0
+    NodesIndices:
+      x: 0
+      y: 1
+    StartControlPoint:
+      x: 0
       y: 0
-      z: 10
-    c1:
-      x: -25
+      z: 0
+    EndControlPoint:
+      x: 0
       y: 0
-      z: -1.6
-  - c0:
-      x: 6
+      z: 0
+  - PathType: 1
+    NodesIndices:
+      x: 0
+      y: 2
+    StartControlPoint:
+      x: -2.49
       y: 0
-      z: -20
-    c1:
-      x: -6
+      z: -12.150768
+    EndControlPoint:
+      x: 8.962599
       y: 0
-      z: -20
-  - c0:
-      x: 25
+      z: -3.597064
+  - PathType: 0
+    NodesIndices:
+      x: 1
+      y: 2
+    StartControlPoint:
+      x: 0
       y: 0
-      z: -1.6
-    c1:
-      x: 8.5
+      z: 0
+    EndControlPoint:
+      x: 0
       y: 0
-      z: 10
-  IsHermite: 0
+      z: 0
