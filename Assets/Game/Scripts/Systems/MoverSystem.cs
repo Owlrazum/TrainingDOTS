@@ -6,8 +6,6 @@ using UnityEngine;
 
 partial struct InputSystem : ISystem
 {
-    
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {

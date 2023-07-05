@@ -13,7 +13,7 @@ class MoverBaker : Baker<MoverAuthoring>
         var entity = GetEntity(TransformUsageFlags.None);
         AddComponent(entity, new Mover
         {
-	        LerpSpeed = authoring.LerpSpeed
+	        lerpSpeed = authoring.LerpSpeed
         });
     }
 }	

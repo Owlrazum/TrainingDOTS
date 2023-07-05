@@ -45,7 +45,7 @@ namespace Authoring
             for (int i = 0; i < authoring.transform.childCount; i++)
             {
                 nodes[i] = CreateAdditionalEntity(TransformUsageFlags.None);
-                AddComponent(nodes[i], new Node() { Position = authoring.transform.GetChild(i).position});
+                AddComponent(nodes[i], new Node() { position = authoring.transform.GetChild(i).position});
                 nodesPos[i] = authoring.transform.GetChild(i).position;
             }
 
@@ -55,15 +55,15 @@ namespace Authoring
                 var edge = CreateAdditionalEntity(TransformUsageFlags.None);
                 int2 startEnd = edgeAuthor.NodesIndices;
                 AddComponent(edge, new Edge() {
-                    StartNode = nodes[startEnd.x],
-                    EndNode = nodes[startEnd.y]
+                    startNode = nodes[startEnd.x],
+                    endNode = nodes[startEnd.y]
                 });
                 if (edgeAuthor.PathType != PathAuthoring.Straight)
                 {
                     if (edgeAuthor.PathType == PathAuthoring.SplineBezier)
                     {
                         AddComponent(edge, new Spline() {
-                            ControlPoints = new float3x4(
+                            controlPoints = new float3x4(
                                 nodesPos[startEnd.x]
                                 , edgeAuthor.StartControlPoint
                                 , nodesPos[startEnd.y]
@@ -80,7 +80,7 @@ namespace Authoring
                             , edgeAuthor.EndControlPoint
                         ).Rearrange();
                         controlPoints = SplineUtil.HermiteToBeizer(controlPoints);
-                        AddComponent(edge, new Spline() { ControlPoints = controlPoints });
+                        AddComponent(edge, new Spline() { controlPoints = controlPoints });
                     }
                 }
             }

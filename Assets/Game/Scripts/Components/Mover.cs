@@ -3,5 +3,5 @@ using Unity.Mathematics;
 
 public struct Mover : IComponentData
 {
-	public float LerpSpeed;
+	public float lerpSpeed;
 }

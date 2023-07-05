@@ -3,6 +3,6 @@ using Unity.Mathematics;
 
 public struct Edge : IComponentData
 {
-	public Entity StartNode;
-    public Entity EndNode;
+	public Entity startNode;
+    public Entity endNode;
 }
