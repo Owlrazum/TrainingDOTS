@@ -4,15 +4,13 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using UnityEngine;
 
-[UpdateAfter(typeof(SpawnerSystem))]
-[UpdateAfter(typeof(SplineInitializer))]
-partial struct MoverSystem : ISystem
+partial struct InputSystem : ISystem
 {
-	const float kMagnitude = 10;
-	const float kSpeed = 1.5f;
+    
+
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-		state.RequireForUpdate<Ball>();
 	}
 
     [BurstCompile]

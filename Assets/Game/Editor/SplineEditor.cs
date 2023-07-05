@@ -38,6 +38,7 @@ namespace Authoring.Editor
         {
             base.OnInspectorGUI();
 
+            GUILayout.Label("Pass string with edges indices separated by ';' and '|'\n Use ';' for showing edge with controls, '|' without controls");
             mEdgesToShowPrompt = GUILayout.TextField(mEdgesToShowPrompt);
 
             // if (GUILayout.Button("Test"))
